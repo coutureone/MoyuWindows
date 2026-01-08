@@ -1,0 +1,212 @@
+<Page x:Class="MoyuWindows.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="500" d:DesignWidth="350"
+      Title="设置"
+      Background="Transparent"
+      Loaded="Page_Loaded">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!-- 标题栏 -->
+            <Grid Margin="0,0,0,16">
+                <Button Content="←"
+                        Style="{StaticResource IconButton}"
+                        HorizontalAlignment="Left"
+                        Click="Back_Click"/>
+                
+                <TextBlock Text="设置"
+                           Style="{StaticResource HeadingSmall}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Grid>
+            
+            <!-- 外观设置 -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="外观"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <!-- 主题选择 -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="主题"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox x:Name="ThemeComboBox"
+                                  HorizontalAlignment="Right"
+                                  Width="120"
+                                  SelectionChanged="ThemeComboBox_SelectionChanged">
+                            <ComboBoxItem Content="跟随系统" Tag="System"/>
+                            <ComboBoxItem Content="浅色模式" Tag="Light"/>
+                            <ComboBoxItem Content="深色模式" Tag="Dark"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <!-- 学习设置 -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="学习"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <!-- 测试模式 -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="测试模式"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox x:Name="QuizModeComboBox"
+                                  HorizontalAlignment="Right"
+                                  Width="120"
+                                  SelectionChanged="QuizModeComboBox_SelectionChanged">
+                            <ComboBoxItem Content="中文选英文" Tag="CnToEn"/>
+                            <ComboBoxItem Content="英文选中文" Tag="EnToCn"/>
+                            <ComboBoxItem Content="拼写模式" Tag="Spelling"/>
+                        </ComboBox>
+                    </Grid>
+                    
+                    <!-- 默认数量 -->
+                    <Grid>
+                        <TextBlock Text="默认背词数量"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox x:Name="WordCountComboBox"
+                                  HorizontalAlignment="Right"
+                                  Width="80"
+                                  SelectionChanged="WordCountComboBox_SelectionChanged">
+                            <ComboBoxItem Content="5"/>
+                            <ComboBoxItem Content="10"/>
+                            <ComboBoxItem Content="15"/>
+                            <ComboBoxItem Content="20"/>
+                            <ComboBoxItem Content="25"/>
+                            <ComboBoxItem Content="30"/>
+                            <ComboBoxItem Content="40"/>
+                            <ComboBoxItem Content="50"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <!-- 词书管理 -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="词书管理"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <!-- 当前词书 -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="当前词书"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="CurrentBookText"
+                                   Text="四级核心词汇"
+                                   Style="{StaticResource BodyText}"
+                                   Foreground="{StaticResource PrimaryBrush}"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <!-- 进度 -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="学习进度"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="ProgressText"
+                                   Text="0/2500"
+                                   Style="{StaticResource BodyText}"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <!-- 重置进度 -->
+                    <Button Content="重置当前词书进度"
+                            Style="{StaticResource DangerButton}"
+                            Padding="16,10"
+                            HorizontalAlignment="Stretch"
+                            Click="ResetProgress_Click"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 数据管理 -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="数据管理"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <Button Content="导入自定义词库"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,0,0,8"
+                            Click="ImportBook_Click"/>
+                    
+                    <Button Content="导出学习数据"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Stretch"
+                            Click="ExportData_Click"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 系统设置 -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="系统"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <!-- 开机启动 -->
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="开机自动启动"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <CheckBox x:Name="StartupCheckBox"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Checked="StartupCheckBox_Changed"
+                                  Unchecked="StartupCheckBox_Changed"/>
+                    </Grid>
+                    
+                    <!-- 热键提示 -->
+                    <Grid>
+                        <TextBlock Text="全局热键"
+                                   Style="{StaticResource BodyText}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Ctrl+Shift+M"
+                                   Style="{StaticResource BodyText}"
+                                   Foreground="{StaticResource PrimaryBrush}"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <!-- 关于 -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="关于"
+                               Style="{StaticResource HeadingSmall}"
+                               Margin="0,0,0,16"/>
+                    
+                    <Grid Margin="0,0,0,8">
+                        <TextBlock Text="版本"
+                                   Style="{StaticResource BodyText}"/>
+                        <TextBlock Text="1.0.0"
+                                   Style="{StaticResource BodyText}"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <TextBlock Text="摸鱼背单词 - Windows 版"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="低调隐蔽的背单词软件"
+                               Style="{StaticResource MutedText}"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

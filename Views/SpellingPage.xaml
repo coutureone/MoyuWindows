@@ -1,0 +1,145 @@
+<Page x:Class="MoyuWindows.Views.SpellingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="350"
+      Title="拼写练习"
+      Background="Transparent"
+      KeyDown="Page_KeyDown"
+      Loaded="Page_Loaded">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 顶部进度条 -->
+        <StackPanel Grid.Row="0">
+            <ProgressBar x:Name="ProgressBar"
+                         Style="{StaticResource ModernProgressBar}"
+                         Value="0"
+                         Maximum="100"
+                         Height="4"/>
+            <TextBlock x:Name="ProgressText"
+                       Text="1/20"
+                       Style="{StaticResource MutedText}"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+        
+        <!-- 题目 -->
+        <StackPanel Grid.Row="1" Margin="0,24,0,0">
+            <TextBlock Text="请拼写出单词"
+                       Style="{StaticResource MutedText}"
+                       HorizontalAlignment="Center"/>
+            
+            <TextBlock x:Name="QuestionText"
+                       Text="n. 例子，实例"
+                       Style="{StaticResource HeadingMedium}"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="300"
+                       Margin="0,12,0,0"/>
+            
+            <!-- 音标 -->
+            <TextBlock x:Name="PhoneticText"
+                       Text="/ɪɡˈzæmpl/"
+                       Style="{StaticResource BodyText}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0"/>
+            
+            <!-- 发音按钮 -->
+            <Button x:Name="SpeakButton"
+                    Content="🔊 发音"
+                    Style="{StaticResource SecondaryButton}"
+                    HorizontalAlignment="Center"
+                    Padding="16,8"
+                    Margin="0,12,0,0"
+                    Click="Speak_Click"/>
+        </StackPanel>
+        
+        <!-- 输入区域 -->
+        <StackPanel Grid.Row="2" 
+                    VerticalAlignment="Center"
+                    Margin="0,24,0,0">
+            
+            <!-- 输入框 -->
+            <TextBox x:Name="AnswerInput"
+                     FontSize="24"
+                     FontWeight="SemiBold"
+                     Padding="16,12"
+                     TextAlignment="Center"
+                     MaxLength="50"
+                     TextChanged="AnswerInput_TextChanged"
+                     Style="{StaticResource ModernTextBox}"/>
+            
+            <!-- 反馈信息 -->
+            <TextBlock x:Name="FeedbackText"
+                       Text=""
+                       FontSize="14"
+                       FontWeight="Medium"
+                       HorizontalAlignment="Center"
+                       Margin="0,12,0,0"
+                       Visibility="Collapsed"/>
+            
+            <!-- 正确答案显示 -->
+            <StackPanel x:Name="CorrectAnswerPanel"
+                        Visibility="Collapsed"
+                        Margin="0,12,0,0">
+                <TextBlock Text="正确答案："
+                           Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Center"/>
+                <TextBlock x:Name="CorrectAnswerText"
+                           Text="example"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource SuccessBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+            
+            <!-- 操作按钮 -->
+            <StackPanel x:Name="ActionButtonsPanel"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,24,0,0">
+                <Button x:Name="SubmitButton"
+                        Content="提交 (Enter)"
+                        Style="{StaticResource PrimaryButton}"
+                        Padding="24,12"
+                        Margin="0,0,8,0"
+                        Click="Submit_Click"/>
+                <Button x:Name="SkipButton"
+                        Content="跳过"
+                        Style="{StaticResource SecondaryButton}"
+                        Padding="24,12"
+                        Margin="8,0,0,0"
+                        Click="Skip_Click"/>
+            </StackPanel>
+            
+            <!-- 下一题按钮（答题后显示） -->
+            <Button x:Name="NextButton"
+                    Content="下一题 (Enter)"
+                    Style="{StaticResource PrimaryButton}"
+                    Padding="24,12"
+                    HorizontalAlignment="Center"
+                    Margin="0,24,0,0"
+                    Visibility="Collapsed"
+                    Click="Next_Click"/>
+        </StackPanel>
+        
+        <!-- 提示文字 -->
+        <TextBlock Grid.Row="3"
+                   Text="按 Enter 提交 · 按 Esc 跳过"
+                   Style="{StaticResource MutedText}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+    </Grid>
+</Page>

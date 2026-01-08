@@ -1,0 +1,111 @@
+<Window x:Class="MoyuWindows.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:MoyuWindows.Views"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="摸鱼背单词" 
+        Height="520" 
+        Width="380"
+        MinHeight="480"
+        MinWidth="360"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown"
+        Deactivated="Window_Deactivated">
+    
+    <Grid>
+        <!-- 系统托盘图标 -->
+        <tb:TaskbarIcon x:Name="NotifyIcon"
+                        ToolTipText="摸鱼背单词"
+                        TrayLeftMouseDown="NotifyIcon_TrayLeftMouseDown">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="显示窗口" Click="ShowWindow_Click"/>
+                    <Separator/>
+                    <MenuItem Header="词库" x:Name="BookMenu"/>
+                    <MenuItem Header="背词数量" x:Name="CountMenu"/>
+                    <Separator/>
+                    <MenuItem Header="收藏夹" Click="Favorites_Click"/>
+                    <MenuItem Header="错词本" Click="WrongBook_Click"/>
+                    <MenuItem Header="统计" Click="Statistics_Click"/>
+                    <MenuItem Header="设置" Click="Settings_Click"/>
+                    <Separator/>
+                    <MenuItem Header="退出" Click="Exit_Click"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+        
+        <!-- 主容器 - 带圆角和阴影 (Windows 11 风格) -->
+        <Border CornerRadius="16" 
+                Background="{StaticResource BackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="24" 
+                                  ShadowDepth="0" 
+                                  Color="#000000" 
+                                  Opacity="0.25"/>
+            </Border.Effect>
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- 标题栏 -->
+                <Grid Grid.Row="0" 
+                      Background="Transparent"
+                      MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- 标题 -->
+                    <StackPanel Grid.Column="0" 
+                                Orientation="Horizontal" 
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="🐟" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="摸鱼背单词" 
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                    
+                    <!-- 窗口控制按钮 -->
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                Margin="0,0,8,0">
+                        <Button Content="─" 
+                                Style="{StaticResource IconButton}" 
+                                Width="32" Height="32"
+                                FontSize="12"
+                                Click="MinimizeButton_Click"/>
+                        <Button Content="✕" 
+                                Style="{StaticResource IconButton}" 
+                                Width="32" Height="32"
+                                FontSize="12"
+                                Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+                
+                <!-- 内容区域 -->
+                <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Frame x:Name="MainFrame" 
+                           NavigationUIVisibility="Hidden"
+                           Background="Transparent"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

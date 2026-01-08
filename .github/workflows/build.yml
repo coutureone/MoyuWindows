@@ -1,0 +1,199 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_NAME: MoyuWindows
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        runtime: [win-x64, win-arm64]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/MoyuWindows.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    
+    - name: Publish
+      run: |
+        dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -o publish/${{ matrix.runtime }}
+    
+    - name: Verify build output
+      run: |
+        if (!(Test-Path "publish/${{ matrix.runtime }}/Moyu.exe")) {
+          Write-Error "Build failed: Moyu.exe not found"
+          exit 1
+        }
+        $size = (Get-Item "publish/${{ matrix.runtime }}/Moyu.exe").Length / 1MB
+        Write-Host "Build successful! Moyu.exe size: $([math]::Round($size, 2)) MB"
+      shell: pwsh
+    
+    - name: Create ZIP archive
+      run: |
+        Compress-Archive -Path "publish/${{ matrix.runtime }}/Moyu.exe" -DestinationPath "Moyu-${{ matrix.runtime }}.zip"
+      shell: pwsh
+    
+    - name: Generate SHA256 checksum
+      run: |
+        $hash = Get-FileHash "Moyu-${{ matrix.runtime }}.zip" -Algorithm SHA256
+        $hash.Hash | Out-File "Moyu-${{ matrix.runtime }}.zip.sha256"
+        Write-Host "SHA256: $($hash.Hash)"
+      shell: pwsh
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Moyu-${{ matrix.runtime }}
+        path: |
+          Moyu-${{ matrix.runtime }}.zip
+          Moyu-${{ matrix.runtime }}.zip.sha256
+        retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+    
+    - name: Display structure of downloaded files
+      run: ls -R artifacts
+    
+    - name: Extract checksums
+      run: |
+        echo "## 📦 文件校验和 (SHA256)" > checksums.md
+        echo "" >> checksums.md
+        for file in artifacts/*/Moyu-*.zip.sha256; do
+          if [ -f "$file" ]; then
+            filename=$(basename "$file" .sha256)
+            checksum=$(cat "$file")
+            echo "- **$filename**: \`$checksum\`" >> checksums.md
+          fi
+        done
+        cat checksums.md
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: |
+          artifacts/Moyu-win-x64/Moyu-win-x64.zip
+          artifacts/Moyu-win-x64/Moyu-win-x64.zip.sha256
+          artifacts/Moyu-win-arm64/Moyu-win-arm64.zip
+          artifacts/Moyu-win-arm64/Moyu-win-arm64.zip.sha256
+        body: |
+          # 🐟 摸鱼背单词 ${{ github.ref_name }}
+          
+          一款低调隐蔽的 Windows 背单词应用，支持多种词库和学习模式。
+          
+          ## ✨ 主要功能
+          
+          ### 学习模式
+          - **记忆模式**: 单词卡片学习
+          - **选择题（中文→英文）**: 看中文选英文
+          - **选择题（英文→中文）**: 看英文选中文 ⭐ 新功能
+          - **拼写模式**: 看中文输入英文 ⭐ 新功能
+          
+          ### 核心特性
+          - ✅ 系统托盘常驻
+          - ✅ 全局热键 (Ctrl+Shift+M)
+          - ✅ TTS 真人发音
+          - ✅ 收藏夹和错词本
+          - ✅ 学习统计和成就系统
+          - ✅ 深色/浅色主题
+          - ✅ Windows 11 圆角设计 ⭐
+          - ✅ 单文件 exe 分发 ⭐
+          
+          ## 📦 下载说明
+          
+          | 文件 | 说明 | 大小 |
+          |------|------|------|
+          | `Moyu-win-x64.zip` | Windows x64 版本（推荐） | ~70MB |
+          | `Moyu-win-arm64.zip` | Windows ARM64 版本 | ~70MB |
+          
+          **安全提示**: 每个ZIP文件都附带 `.sha256` 校验和文件，下载后请验证文件完整性。
+          
+          ## 🚀 安装方法
+          
+          1. 下载对应版本的 ZIP 文件
+          2. 解压到任意目录
+          3. 运行 `Moyu.exe`
+          
+          **特点：**
+          - 单文件 exe（约 188MB）
+          - 无需安装 .NET 运行时
+          - 数据库和图标已内置
+          - 开箱即用
+          
+          ## 🔒 文件校验
+          
+          下载后请验证文件完整性：
+          
+          ```powershell
+          # PowerShell 验证命令
+          Get-FileHash Moyu-win-x64.zip -Algorithm SHA256
+          ```
+          
+          $(cat checksums.md)
+          
+          ## 🛠️ 系统要求
+          
+          - Windows 10 1809 或更高版本
+          - 无需安装 .NET 运行时（已内置）
+          - 约 200MB 磁盘空间
+          
+          ## 📝 快捷键
+          
+          | 快捷键 | 功能 |
+          |--------|------|
+          | `Ctrl+Shift+M` | 全局热键：显示/隐藏窗口 |
+          | `ESC` | 隐藏窗口 |
+          | `Enter` | 提交答案/下一题 |
+          | `1-4` / `A-D` | 选择题快速选择 |
+          | `S` | 朗读单词 |
+          | `F` | 收藏/取消收藏 |
+          
+          ## 📖 更多信息
+          
+          详见 [README.md](https://github.com/${{ github.repository }}/blob/main/README.md)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

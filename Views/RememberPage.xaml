@@ -1,0 +1,152 @@
+<Page x:Class="MoyuWindows.Views.RememberPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="350"
+      Title="记忆"
+      Background="Transparent"
+      KeyDown="Page_KeyDown"
+      Loaded="Page_Loaded">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 顶部进度条 -->
+        <StackPanel Grid.Row="0">
+            <ProgressBar x:Name="ProgressBar"
+                         Style="{StaticResource ModernProgressBar}"
+                         Value="0"
+                         Maximum="100"
+                         Height="4"/>
+            <TextBlock x:Name="ProgressText"
+                       Text="1/20"
+                       Style="{StaticResource MutedText}"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+        
+        <!-- 单词内容 -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="0,20,0,0">
+            <StackPanel HorizontalAlignment="Center" 
+                        VerticalAlignment="Center">
+                
+                <!-- 单词 -->
+                <TextBlock x:Name="HeadWordText"
+                           Text="example"
+                           Style="{StaticResource WordHeading}"/>
+                
+                <!-- 音标 -->
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center"
+                            Margin="0,8,0,0">
+                    <TextBlock x:Name="PhoneticText"
+                               Text="/ɪɡˈzæmpəl/"
+                               Style="{StaticResource PhoneticText}"/>
+                    <Button x:Name="SpeakButton"
+                            Content="🔊"
+                            Style="{StaticResource IconButton}"
+                            Width="32" Height="32"
+                            Margin="8,0,0,0"
+                            Click="Speak_Click"/>
+                </StackPanel>
+                
+                <!-- 释义 -->
+                <TextBlock x:Name="TranslationText"
+                           Text="n. 例子，实例；范例"
+                           Style="{StaticResource TranslationText}"
+                           Margin="0,24,0,0"
+                           MaxWidth="300"/>
+                
+                <!-- 例句 -->
+                <Border x:Name="PhrasePanel"
+                        Style="{StaticResource Card}"
+                        Margin="0,24,0,0"
+                        Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock x:Name="PhraseText"
+                                   Text="For example, ..."
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="14"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock x:Name="PhraseCNText"
+                                   Text="例如，..."
+                                   Style="{StaticResource BodyText}"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- 日语五十音专用显示 -->
+                <StackPanel x:Name="GoinPanel" 
+                            Visibility="Collapsed"
+                            Margin="0,16,0,0">
+                    <TextBlock x:Name="KatakanaText"
+                               Text="ア"
+                               Style="{StaticResource HeadingMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock x:Name="RomajiText"
+                               Text="a"
+                               Style="{StaticResource BodyText}"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- 操作按钮 -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,16,0,16">
+            <!-- 收藏按钮 -->
+            <StackPanel Margin="0,0,24,0">
+                <Button x:Name="FavoriteButton"
+                        Content="☆"
+                        Style="{StaticResource IconButton}"
+                        Width="48" Height="48"
+                        FontSize="24"
+                        Click="Favorite_Click"
+                        ToolTip="点击收藏此单词"/>
+                <TextBlock Text="收藏"
+                           Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Center"
+                           FontSize="11"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+            
+            <!-- 加入错词本 -->
+            <StackPanel>
+                <Button x:Name="WrongButton"
+                        Content="✗"
+                        Style="{StaticResource IconButton}"
+                        Width="48" Height="48"
+                        FontSize="24"
+                        Foreground="{StaticResource DangerBrush}"
+                        Click="AddToWrongBook_Click"
+                        ToolTip="点击加入错词本"/>
+                <TextBlock Text="错词本"
+                           Style="{StaticResource MutedText}"
+                           HorizontalAlignment="Center"
+                           FontSize="11"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- 下一个按钮 -->
+        <Button Grid.Row="3"
+                x:Name="NextButton"
+                Content="下一个 →"
+                Style="{StaticResource PrimaryButton}"
+                Click="Next_Click"/>
+    </Grid>
+</Page>
