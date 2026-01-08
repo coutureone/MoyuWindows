@@ -1,6 +1,6 @@
 # Moyu Windows 版本
 
-[![Build and Release](https://github.com/YOUR_USERNAME/MoyuWindows/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/MoyuWindows/actions/workflows/build.yml)
+[![Build and Release](https://github.com/coutureone/MoyuWindows/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/MoyuWindows/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
